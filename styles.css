@@ -21,11 +21,9 @@ html, body {
   margin-bottom: 110px;
 }
 #navbar ul {
-  background: red;
   margin-left: -38px;
 }
 #navbar {
-  background: green;
   display: block;
   position: fixed;
   top: 0px;
