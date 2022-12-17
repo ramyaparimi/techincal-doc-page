@@ -1,0 +1,111 @@
+<!DocType html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Export List of GitHub Repositories into a .txt File</title>
+  <link rel="stylesheet" href="styles.css">
+
+</head>
+
+<body>
+  <nav id="navbar">
+    <ul>
+      <header>List of steps</header>
+      <li><a class="nav-link" href="#Introduction">Introduction</a></li>
+      <li><a class="nav-link" href="#List_org_repositories">List org repositories</a></li>
+      <li><a class="nav-link" href="#JSON_values">JSON Values</a></li>
+      <li><a class="nav-link" href="#JQ_to_filter_JSON">JQ to filter JSON</a></li>
+      <li><a class="nav-link" href="#Output_data_into_txt_file">Output data into txt file</a></li>
+      <li><a class="nav-link" href="#Conclusion">Conclusion</a></li>
+
+    </ul>
+  </nav>
+  <main id="main-doc">
+    <section class="main-section" id="Introduction">
+      <header>Introduction</header>
+      <article>
+        <p>This guide helps in creating a list of existing GitHub repositories in a GitHub organization in a text tile.
+          Exporting to a txt file helps in manipulating the data as needed for later steps.
+          The GH CLI official documentation has information to install and authorize GH CLI from your local.</p>
+        <p>Below are the steps for this guide:</p>
+        <ol>
+          <li>List org repositories</li>
+          <li>JSON values</li>
+          <li>JQ to filter JSON</li>
+          <li>Output data into txt file</li>
+          <li>Conclusion</li>
+        </ol>
+      </article>
+    </section>
+    <section class="main-section" id="List_org_repositories">
+      <header>List org repositories</header>
+      <article>
+      <p><code>gh repo list ramyaparimi -L 13</code> will give an output of all repositories with description, repo
+        visibility and last activity in the terminal.</p>
+      <p><code>-L</code> flag will give aximum number of repositories to list followed by the total number of repos in
+        the org. Example <code>-L 13</code> gives the total number of 13 repos in my org.</p>
+      <img src="https://user-images.githubusercontent.com/33761166/187504938-c0f7ebc2-339a-4445-b770-73a4dc836eb6.png" alt="list of repos in org" />
+      </article>
+    </section>
+    <section class="main-section" id="JSON_values">
+      <header>JSON values</header>
+      <article>
+        <p>Adding the field <code>name</code> to <code>JSON</code> value will give the list of repos and their names.
+        </p>
+        <code>
+          gh repo list ramyaparimi -L 13 --json nameWithOwner
+</code>
+        <p>The list of repos in json format:</p>
+        <img src="https://user-images.githubusercontent.com/33761166/189429403-391ad877-4a76-4d8c-bedc-72cce987f8b2.png" alt="repos in json format">
+      </article>
+    </section>
+    <section class="main-section" id="JQ_to_filter_JSON">
+      <header>JQ to filter JSON</header>
+      <article>
+        <p></p>The next step involves modifying the json output using jq. Install jq if not having already. Taking the
+        definition from [official jq documentation](https://stedolan.github.io/jq/manual/): _"A jq program is a
+        "filter": it takes an input, and produces an output. There are a lot of builtin filters for extracting a
+        particular field of an object, or converting a number to a string, or various other standard tasks."_
+        <p>Adding a jq value of <code>".[].name"</code> will generate list of repo names in the form of a list. It is
+          important to have <code>"</code> around the jq command to output the repo names without corrently. Not adding
+          double quotes around the <code>.[].name</code> command threw me an error.</p>
+        <code>
+            gh repo list ramyaparimi -L 13 --json nameWithOwner  --jq ".[].nameWithOwner"
+        </code>
+        <p>Here is the list of repositories with owner name:</p>
+        <img src="https://user-images.githubusercontent.com/33761166/189430191-ad3e90e1-3184-4291-a2dd-d4f4a62d9f2d.png" alt="repos with owner name" />
+      </article>
+    </section>
+    <section class="main-section" id="Output_data_into_txt_file">
+      <header>Output data into txt file</header>
+      <article>
+      <p>I wanted this list exported into a .txt for easy data access and manipulation in later steps. I used
+        <code>></code> output redirection to save the output in a .txt file.
+      </p>
+      <code>
+        gh repo list ramyaparimi -L 13 --json nameWithOwner  --jq ".[].nameWithOwner" > sample.txt
+        </code>
+      <p>Using <code>>></code> will input the data into an already existing txt file:</p>
+      <code>
+        gh repo list ramyaparimi -L 13 --json nameWithOwner  --jq ".[].nameWithOwner" >> sample.txt
+      </code>
+      </article>
+
+    </section>
+    <section class="main-section" id="Conclusion">
+      <header>Conclusion</header>
+      <article>
+        <p>It is easy to manipulate data in text file. A GitHub Action can be used to change the visibility of the
+          repositories to the desired state. However, necessary persmissions should be there to make such changes in a
+          GitHub organization.</p>
+        <p></p>
+      </article>
+    </section>
+
+  </main>
+
+</body>
+
+</html>
